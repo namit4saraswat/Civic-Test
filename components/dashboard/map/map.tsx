@@ -2,13 +2,14 @@
 
 import React from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
-import L from "leaflet";
+import "leaflet/dist/leaflet.css";   
+import L from "leaflet"; // I installed package @types/leaflet
 import { useAppContext } from "@/context/AppContext";
 import { ConvertTimestampToReadable } from "@/components/utils";
 
 // Fix for marker icons not displaying
-delete L.Icon.Default.prototype._getIconUrl;
+// delete L.Icon.Default.prototype._getIconUrl;
+delete (L.Icon.Default.prototype as any)._getIconUrl;
 
 L.Icon.Default.mergeOptions({
   iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
@@ -19,11 +20,12 @@ L.Icon.Default.mergeOptions({
 
 const MapComponent = () => {
   const { data } = useAppContext();
-
-  const center = data.length
+  
+  // const center = data.length
+  const center: [number, number] = data.length
     ? [
-        data.reduce((acc, issue) => acc + issue.latitude, 0) / data.length,
-        data.reduce((acc, issue) => acc + issue.longitude, 0) / data.length,
+        data.reduce((acc:number, issue:any) => acc + issue.latitude, 0) / data.length,
+        data.reduce((acc:number, issue:any) => acc + issue.longitude, 0) / data.length,
       ]
     : [51.505, -0.09]; // Default to London if no data is available
 
@@ -35,7 +37,7 @@ const MapComponent = () => {
         style={{ height: "70vh", width: "100%", borderRadius: "10px" }}
       >
         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-        {data.map((issue) => (
+        {data.map((issue:any) => (
           <Marker key={issue.id} position={[issue.latitude, issue.longitude]}>
             <Popup>
               <div>
