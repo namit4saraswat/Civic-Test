@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { stateCityMap } from "./StateCityMap";
 import {
   Card,
   CardHeader,
@@ -15,7 +16,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
+// const stateCityMap : Record<string, string[]> = {
+//   "Uttar Pradesh": ["Greater Noida", "Varanasi"],
+//   "Haryana": ["Gurgaon"],
+// };
 const Filters = ({
   filters,
   setFilters,
@@ -23,7 +27,9 @@ const Filters = ({
   filters: any;
   setFilters: any;
 }) => {
-  const handleFilterChange = () => {};
+  const handleStateChange = (state: string) => {
+    setFilters({ ...filters, state, city: "" }); // It will reset city whenever I am changing state
+  };
 
   return (
     <div className="p-4">
@@ -69,35 +75,17 @@ const Filters = ({
                 onValueChange={(value) =>
                   setFilters({ ...filters, type: value })
                 }
+                
               >
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="damaged_road">Damaged Road</SelectItem>
-                  <SelectItem value="drainage_problem">
-                    Drainage Problem
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <label htmlFor="city" className="block mb-2 text-sm font-medium ">
-                City
-              </label>
-              <Select
-                value={filters?.city || ""}
-                onValueChange={(value) =>
-                  setFilters({ ...filters, city: value })
-                }
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Greater Noida">Greater Noida</SelectItem>
-                  <SelectItem value="Gurgaon">Gurgaon</SelectItem>
-                  <SelectItem value="Varanasi">Varanasi</SelectItem>
+                  <SelectItem value="drainage_problem"> Drainage Problem</SelectItem>
+                  <SelectItem value="potholes">Potholes</SelectItem>
+                  <SelectItem value="manhole">Manhole</SelectItem>
+                  <SelectItem value="Other">Other</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -111,15 +99,41 @@ const Filters = ({
               <Select
                 value={filters?.state || ""}
                 onValueChange={(value) =>
-                  setFilters({ ...filters, state: value })
+                  setFilters({...filters, state:value, city:""})
+                  // handleStateChange(value)
                 }
               >
                 <SelectTrigger className="w-full">
                   <SelectValue placeholder="Select" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Uttar Pradesh">Uttar Pradesh</SelectItem>
-                  <SelectItem value="Haryana">Haryana</SelectItem>
+                  {Object.keys(stateCityMap).map((state) => (
+                    <SelectItem key={state} value={state}>{state}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label htmlFor="city" className="block mb-2 text-sm font-medium ">
+                City
+              </label>
+              <Select
+                value={filters?.city || ""}
+                onValueChange={(value) =>
+                  setFilters({ ...filters, city: value })
+                }
+                disabled={!filters?.state} // I disabled the city dropdown just to avoid clicking city first
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select" />
+                </SelectTrigger>
+                <SelectContent>
+                {filters.state &&
+                    stateCityMap[filters.state]?.map((city) => (
+                      <SelectItem key={city} value={city}>
+                        {city}
+                      </SelectItem>
+                    ))}
                 </SelectContent>
               </Select>
             </div>
