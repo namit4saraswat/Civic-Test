@@ -2,7 +2,9 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { BarChart, LineChart } from '@/components/dashboard/charts';
-import MapComponent from '@/components/dashboard/map/map';
+// import MapComponent from '@/components/dashboard/map/map';
+import dynamic from "next/dynamic";
+const MapComponent = dynamic(() => import("@/components/dashboard/map/map"), { ssr: false });
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
